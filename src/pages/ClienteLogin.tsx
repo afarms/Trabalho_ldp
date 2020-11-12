@@ -15,28 +15,27 @@ export default function ClienteLogin() {
     })
 
     async function handleLogin(e: FormEvent){
+        // cuida do login
         e.preventDefault()
 
         const { nome, senha } = formDate
 
-        let cliente = await api.get(`login/${nome}/${senha}`)
+        let cliente = await api.get(`login/${nome}/${senha}`) // verifica se existe o cliente no banco
         
-        // const cliente = new Cliente({
-        //     nome: nome,
-        //     senha: senha,
-        //     plano: 3
-        // })
-        if(cliente.data){
+        if(cliente.data){ // caso o cliente exista
             
-            console.log(JSON.stringify(cliente.data))
+            console.log(JSON.stringify(cliente.data)) 
             
-            localStorage.setItem("cliente-atual", JSON.stringify(cliente.data))
-            history.push('/mensagens')
+            localStorage.setItem("cliente-atual", JSON.stringify(cliente.data)) // guardo o cliente no local storage
+            history.push('/mensagens') // navega o usuario para tela de mensagens
+        }else{
+            alert('nome ou senha errados') // caso o usuarrio esteja errado exibe uma mensagem
         }
 
     }
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>){
+        // atualiza a variavel de formulario quando a mudanca em seus valores
         const { name, value } = event.target
 
         setFormDate({ ...formDate, [name]: value})

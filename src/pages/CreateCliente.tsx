@@ -15,26 +15,17 @@ export default function CreateCliente() {
 
     async function handleCadastro(e: FormEvent){
         e.preventDefault()
-
+        // cria um novo usuarrio
 
         const { nome, senha , plano} = formDate
 
         let planoCliente = plano
 
-    
-        if(plano<1){
-            planoCliente = 1
-        }else if(plano > 3){
-            planoCliente = 3
-        }
+        // como so temos planos de 1 a 3, aqui e feito um tratamento, para que caso o usuario insira um numero maior que 3 seu plano seja 3
+        
         
         const cliente = await api.post(`cliente`, {nome, senha, idplano:planoCliente})
         
-        // const cliente = new Cliente({
-        //     nome: nome,
-        //     senha: senha,
-        //     plano: plano
-        // })
         console.log(JSON.stringify(cliente))
         
         localStorage.setItem("cliente-atual", JSON.stringify(cliente))
@@ -44,9 +35,23 @@ export default function CreateCliente() {
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement>){
         const { name, value } = event.target
-
-        setFormDate({ ...formDate, [name]: value})
+        let newVal
+        console.log(value);
+        if(name == 'plano'){
+            // como so temos planos de 1 a 3, aqui e feito um tratamento, para que caso o usuario insira um numero maior que 3 seu plano seja 3
+            if(parseInt(value)<1){
+                newVal = 1
+            }else if(parseInt(value) > 3){
+                newVal = 3
+            }else{
+                newVal = value
+            }
+            setFormDate({ ...formDate, [name]: newVal.toString()})
+        }else{
+            setFormDate({ ...formDate, [name]: value})
+        }
     }
+
 
     return (
         <div id="page-cliente-login">
@@ -66,7 +71,7 @@ export default function CreateCliente() {
 
                         <div className="input-block">
                             <label htmlFor="senha">Senha</label>
-                            <input
+                            <input className='ratioField'
                                 id="senha"
                                 name="senha"
                                 type="password"
@@ -74,14 +79,15 @@ export default function CreateCliente() {
                             />
                         </div>
                         <div className="input-block">
-                            <label htmlFor="plano">Plano</label>
-                            <input
+                            <label  htmlFor="plano">Plano</label>
+                            <input 
                                 id="plano"
                                 name="plano"
                                 type="number"
-                                placeholder="Digite um número de 1 à 3"
+                                placeholder="insira um numero entra de 1 a 3"
                                 onChange={handleInputChange}
-                            />
+                                value = {formDate.plano}
+                                />
                         </div>
                     </fieldset>
                     <button className="confirm-button" type="submit">
